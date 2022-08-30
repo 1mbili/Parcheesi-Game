@@ -1,3 +1,6 @@
+"""
+Module for Game class
+"""
 from entities.dice import Dice
 from entities.player import Player
 from entities.board import Board
@@ -10,7 +13,9 @@ PLAYERS = {"Red": 0,
 
 
 class Game:
-    def __init__(self, *, player_num=4):
+    """Main for Game Class"""
+
+    def __init__(self, player_num=4):
         self.dice = Dice(223)
         self.player_num = player_num
         self.player_round = 0
@@ -19,14 +24,16 @@ class Game:
             players.append(Player(color=key, starting_point=item))
         self.board = Board(players)
 
-    def move(self):
+    def move(self) -> None:
+        """Make move in the game"""
         result = self.dice.throw()
-        self.board.move(result, self.player_round)
+        self.board.update(result, self.player_round)
         while result == 6:
             result = self.dice.throw()
-            self.board.move(result, self.player_round)
+            self.board.update(result, self.player_round)
 
         self.player_round = (self.player_round + 1) % 4
+
 
 board = Board(PLAYERS)
 red_pawn = Pawn("red")
