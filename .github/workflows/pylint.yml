@@ -20,4 +20,4 @@ jobs:
     - name: Analysing the code with pylint
       continue-on-error: true
       run: |
-        pylint --rcfile=.pylintrc src
+        pylint --rcfile=`$PWD`/.pylintrc src
