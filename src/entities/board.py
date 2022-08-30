@@ -1,5 +1,4 @@
-from Field import Field
-from Pawn import Pawn
+from entities.field import Field
 CELL_NUM = 40
 
 

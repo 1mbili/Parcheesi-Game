@@ -1,7 +1,7 @@
-from Dice import Dice
-from Player import Player
-from Board import Board
-from Pawn import Pawn
+from entities.dice import Dice
+from entities.player import Player
+from entities.board import Board
+from entities.pawn import Pawn
 PLAYERS = {"Red": 0,
            "Blue": 10,
            "Yellow": 20,

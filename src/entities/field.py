@@ -1,4 +1,4 @@
-from Pawn import Pawn
+from entities.pawn import Pawn
 
 
 class Field:
