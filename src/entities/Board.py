@@ -15,12 +15,3 @@ class Board:
     def move(self, dice_result, player_turn):
         pass
 
-red_pawn = Pawn("red")
-board = Board(3)
-board.fields[1].add_pawn(red_pawn)
-board.fields[1].add_pawn(red_pawn)
-
-field = board.fields[1]
-for i in field.pawns:
-    print(i)
-print(board)

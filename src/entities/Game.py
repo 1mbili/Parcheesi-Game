@@ -1,7 +1,7 @@
 from Dice import Dice
 from Player import Player
 from Board import Board
-
+from Pawn import Pawn
 PLAYERS = {"Red": 0,
            "Blue": 10,
            "Yellow": 20,
@@ -28,3 +28,11 @@ class Game:
 
         self.player_round = (self.player_round + 1) % 4
 
+board = Board(PLAYERS)
+red_pawn = Pawn("red")
+board.fields[1].add_pawn(red_pawn)
+board.fields[1].add_pawn(red_pawn)
+field = board.fields[1]
+for i in field.pawns:
+    print(i)
+print(board)
