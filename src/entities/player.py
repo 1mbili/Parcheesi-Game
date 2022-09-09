@@ -8,6 +8,7 @@ class Player:
 
     def __init__(self, color, starting_point):
         self.free_pawns = 4
+        self.house = [0 for _ in range(4)]
         self.color = color
         self.starting_point = starting_point
         self.pawns_position = [-1 for i in range(4)]

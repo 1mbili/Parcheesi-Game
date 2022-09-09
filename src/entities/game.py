@@ -37,8 +37,8 @@ class Game:
 
 board = Board(PLAYERS)
 red_pawn = Pawn("red")
-board.fields[1].add_pawn(red_pawn)
-board.fields[1].add_pawn(red_pawn)
+board.fields[1].move_pawn(red_pawn)
+board.fields[1].move_pawn(red_pawn)
 field = board.fields[1]
 for i in field.pawns:
     print(i)

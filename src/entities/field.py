@@ -4,13 +4,28 @@ Module for Field class
 from entities.pawn import Pawn
 
 
+class NoPawnFoundException(Exception):
+    """
+    Exception for no pawn in field
+    """
+
+
 class Field:
     """Class representing field on a board"""
 
     def __init__(self):
         self.pawns = []
 
-    def add_pawn(self, new_pawn: Pawn) -> list:
+    def take_pawn(self, color: str) -> Pawn:
+        """
+        Remove pawn from Field
+        :return: Pawn from field
+        """
+        if self.pawns and self.pawns[-1].color == color:
+            return self.pawns.pop()
+        raise NoPawnFoundException(f"No {color} pawns on the field")
+
+    def move_pawn(self, new_pawn: Pawn) -> list:
         """
         Adds pawn to a field and checks other pawns
         :param new_pawn: Pawn to add to the field
