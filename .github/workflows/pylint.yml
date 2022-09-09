@@ -18,6 +18,5 @@ jobs:
         pip install pylint
         ls -a
     - name: Analysing the code with pylint
-      continue-on-error: true
       run: |
-        pylint --rcfile=.pylintrc src
+        pylint --fail-under=8 --rcfile=.pylintrc src
