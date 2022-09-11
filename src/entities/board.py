@@ -4,7 +4,17 @@ Module for Board class
 from entities.field import Field
 from entities.pawn import Pawn
 from entities.player import Player
+
 CELL_NUM = 40
+
+
+def try_move_pawn_in_house(active_player: Player, dice_result: int) -> bool:
+    """Trys to move pawn inside house
+    :param active_player: Player whose turn is it
+    :param dice_result: Number of fields on dice
+    :return: Bool if pawn was moved inside house
+    """
+    return active_player.move_in_house(dice_result)
 
 
 class Board:
@@ -18,51 +28,61 @@ class Board:
         self.fields = [Field() for _ in range(CELL_NUM)]
         self.players = players
 
-    def update(self, dice_result, player_turn) -> None:
+    def update(self, dice_result: int, round_num: int) -> None:
         """
-        Method representing one player move
+        Make one player move
         :param dice_result: Number thrown by the dice
-        :param player_turn: Number of the player
+        :param round_num: Number of the round
         """
-        active_player = self.players[player_turn]
-        pawn_position = active_player.get_further_pawn()
-        if pawn_position == -1:
-            if dice_result in [1, 6]:
-                pawn = Pawn(color=active_player.color)
-                other_pawns = self.fields[active_player.starting_position].move_pawn(pawn)
-                self.fix_pawns_in_home(other_pawns)
-        else:
-            self.move_pawn(pawn_position, active_player, dice_result)
+        if (active_player := self.player_round(round_num)) is None:
+            return
+        self.move_pawn(active_player, dice_result)
 
-    def move_pawn(self, position: int, player: Player, to_move: int) -> None:
+    def move_pawn(self, active_player: Player, to_move: int, occur: int = 1) -> None:
         """
         Moves pawn in the Field
-        :param position: position of the pawn
-        :param player: player which is the move
+        :param occur: number of further pawn to take
+        :param active_player: player which is the move
         :param to_move: number of points from dice
         """
-        self.fields[position].take_pawn(player.color)
-        pawn = Pawn(color=player.color)
-        new_position = (position + to_move) % 40
-        if position < player.starting_point <= new_position or position > new_position > player.starting_point:
-            in_house_position = new_position - player.starting_point
-            if in_house_position < 4 and player.house[in_house_position] == 0:
-                player.house[in_house_position] = 1
-            else:
-                self.fields[position].move_pawn(pawn)
-        else:
-            pawn = Pawn(color=player.color)
-            other_pawns = self.fields[new_position].move_pawn(pawn)
-        self.fix_pawns_in_home(other_pawns)
+        position = active_player.get_selected_pawn(occur)
+        if position == -1:
+            if to_move in [1, 6]:
+                if active_player.has_pawns_in_hand():
+                    self.add_pawn_to_board(active_player)
+            return
 
-    def fix_pawns_in_home(self, pawns) -> None:
+        if not try_move_pawn_in_house(active_player, to_move):
+            pawn = self.fields[position].take_pawn(active_player.color)
+            new_position = (position + to_move) % 40
+            if (position < active_player.starting_point <= new_position
+                    or position > new_position >= active_player.starting_point):
+                in_house_position = new_position - active_player.starting_point
+                next_occur = occur + 1
+                if in_house_position < 4 and active_player.house[in_house_position] == 0:
+                    active_player.move_to_house(in_house_position, position)
+                elif active_player.get_selected_pawn(next_occur):
+                    self.fields[position].move_pawn(pawn)
+                    self.move_pawn(active_player, to_move, next_occur)
+                else:
+                    self.fields[position].move_pawn(pawn)
+                    active_player.pawns_position.append(position)
+                return
+
+            other_pawns = self.fields[new_position].move_pawn(pawn)
+            active_player.move_pawn_loc(position, new_position)
+            self.fix_pawns_in_hand(other_pawns, new_position)
+
+    def fix_pawns_in_hand(self, pawns: list, position: int) -> None:
         """
-        Adds beaten pawns to players House:
+        Adds beaten pawns to players hand:
         :param pawns: list of beaten pawns
+        :param position: nr o field fixing
         """
         for pawn in pawns:
-            color = pawn.color
-            self.players[color].return_pawn()
+            for player in self.players:
+                if player.color == pawn.color:
+                    player.return_pawn(position)
 
     def __repr__(self) -> str:
         """
@@ -71,4 +91,26 @@ class Board:
         result_str = ""
         for i, j in enumerate(self.fields):
             result_str += f"Field nr. {i}: {j}\n"
+        for player in self.players:
+            result_str += repr(player)
         return result_str
+
+    def player_round(self, round_num: int) -> Player:
+        """
+        Return player which round is it
+        :param round_num: player round number
+        :return: player
+        """
+        for i in range(len(self.players)):
+            player_round = (round_num + i) % 4
+            if self.players[player_round].pawns_position:
+                return self.players[player_round]
+
+    def add_pawn_to_board(self, player: Player) -> None:
+        """
+        Adds player pawn to board
+        :param player:
+        """
+        pawn = Pawn(color=player.color)
+        other_pawns = self.fields[player.starting_point].move_pawn(pawn)
+        self.fix_pawns_in_hand(other_pawns, player.starting_point)

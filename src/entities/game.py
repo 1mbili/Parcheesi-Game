@@ -4,7 +4,7 @@ Module for Game class
 from entities.dice import Dice
 from entities.player import Player
 from entities.board import Board
-from entities.pawn import Pawn
+
 PLAYERS = {"Red": 0,
            "Blue": 10,
            "Yellow": 20,
@@ -15,10 +15,10 @@ PLAYERS = {"Red": 0,
 class Game:
     """Main for Game Class"""
 
-    def __init__(self, player_num=4):
-        self.dice = Dice(223)
+    def __init__(self, player_num=4, seed=223):
+        self.dice = Dice(seed)
         self.player_num = player_num
-        self.player_round = 0
+        self.round = 0
         players = []
         for key, item in PLAYERS.items():
             players.append(Player(color=key, starting_point=item))
@@ -27,19 +27,18 @@ class Game:
     def move(self) -> None:
         """Make move in the game"""
         result = self.dice.throw()
-        self.board.update(result, self.player_round)
+        self.board.update(result, self.round)
         while result == 6:
             result = self.dice.throw()
-            self.board.update(result, self.player_round)
+            self.board.update(result, self.round)
+        self.round += 1
 
-        self.player_round = (self.player_round + 1) % 4
 
-
-board = Board(PLAYERS)
-red_pawn = Pawn("red")
-board.fields[1].move_pawn(red_pawn)
-board.fields[1].move_pawn(red_pawn)
-field = board.fields[1]
-for i in field.pawns:
-    print(i)
-print(board)
+if __name__ == "__main__":
+    game = Game(seed=123)
+    for i in range(506):
+        print(i)
+        if i == 209:
+            print(i == 27)
+        game.move()
+    print(game.board)

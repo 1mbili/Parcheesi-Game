@@ -21,6 +21,7 @@ class Field:
         Remove pawn from Field
         :return: Pawn from field
         """
+        print(self.pawns)
         if self.pawns and self.pawns[-1].color == color:
             return self.pawns.pop()
         raise NoPawnFoundException(f"No {color} pawns on the field")
@@ -32,16 +33,14 @@ class Field:
         :return: list of Pawn that are in other color then added
         """
         other_pawns = []
-        self.pawns = [pawn if pawn.color == new_pawn.color else other_pawns.append(pawn)
-                      for pawn in self.pawns]
-
+        for pawn in self.pawns:
+            if pawn.color != new_pawn.color:
+                self.pawns.remove(pawn)
+                other_pawns.append(pawn)
         self.pawns.append(new_pawn)
         return other_pawns
 
     def __repr__(self) -> str:
-        """Probably to remove"""
+        """Field representation"""
         return f"{self.pawns}"
 
-    def __str__(self) -> str:
-        """Probably to remove"""
-        return f"{self.pawns}"
