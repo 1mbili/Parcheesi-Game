@@ -1,7 +1,7 @@
 """
 Module for Player class
 """
-from src.entities.Enums import Player_starting
+from src.entities.enums import PlayerStarting
 
 
 class Player:
@@ -11,8 +11,8 @@ class Player:
         self.free_pawns = 4
         self.house = [0 for _ in range(4)]
         self.color = color
-        self.starting_point = getattr(Player_starting, color).value
-        self.pawns_position = [-1 for i in range(4)]
+        self.starting_point = getattr(PlayerStarting, color).value
+        self.pawns_position = [-1 for _ in range(4)]
 
     def return_pawn(self, position: int) -> None:
         """
@@ -48,6 +48,7 @@ class Player:
         :return:index of selected pawn
         """
         indexes = self.pawns_position.copy()
+        res = 0
         for _ in range(select):
             if (res := self.get_further_pawn()) == -2:
                 return -2
@@ -61,7 +62,7 @@ class Player:
         :param select: numer of pawn to take
         :return:index of selected pawn
         """
-        indexes = self.pawns_position.copy()
+        res = 0
         for _ in range(select):
             if (res := self.get_further_pawn()) == -2:
                 return 0

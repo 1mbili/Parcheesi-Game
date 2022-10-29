@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Player_starting(Enum):
+class PlayerStarting(Enum):
     RED = 0
     BLUE = 10
     YELLOW = 20

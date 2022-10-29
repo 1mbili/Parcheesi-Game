@@ -44,4 +44,3 @@ class Field:
     def __repr__(self) -> str:
         """Field representation"""
         return f"{self.pawns}"
-

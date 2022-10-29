@@ -1,6 +1,8 @@
 """
 Module for Board class
 """
+from typing import Any
+
 from src.entities.field import Field
 from src.entities.pawn import Pawn
 from src.entities.player import Player
@@ -45,7 +47,7 @@ class Board:
         self.move_pawn(active_player, dice_result)
 
     # TODO: Refactor this to new class
-    def move_pawn(self, active_player: Player, to_move: int, occur: int = 1) -> None:
+    def move_pawn(self, active_player: Player, to_move: int, occur: int = 1) -> int:
         """
         Moves pawn in the Field
         :param occur: number of further pawn to take
@@ -57,9 +59,8 @@ class Board:
             return -2
 
         if position == -1:
-            if to_move in [1, 6]:
-                if active_player.has_pawns_in_hand():
-                    self.add_pawn_to_board(active_player)
+            if to_move in [1, 6] and  active_player.has_pawns_in_hand():
+                self.add_pawn_to_board(active_player)
             return -1
 
         if not try_move_pawn_in_house(active_player, to_move):
@@ -79,7 +80,7 @@ class Board:
                 else:
                     self.fields[position].move_pawn(pawn)
                     active_player.pawns_position.append(position)
-                return
+                return -1
 
             other_pawns = self.fields[new_position].move_pawn(pawn)
             active_player.move_pawn_loc(position, new_position)
@@ -107,7 +108,7 @@ class Board:
             result_str += repr(player)
         return result_str
 
-    def player_round(self, round_num: int) -> Player:
+    def player_round(self, round_num: int) -> Any | None:
         """
         Return player which round is it
         :param round_num: player round number
@@ -117,6 +118,7 @@ class Board:
             player_round = (round_num + i) % 4
             if self.players[player_round].pawns_position:
                 return self.players[player_round]
+        return None
 
     def add_pawn_to_board(self, player: Player) -> None:
         """

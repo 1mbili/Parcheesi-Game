@@ -1,6 +1,6 @@
 import pytest
 from src.entities.player import Player
-from src.entities.Enums import Player_starting
+from src.entities.enums import PlayerStarting
 
 
 @pytest.fixture
@@ -16,7 +16,7 @@ def test_simple():
     player = Player("RED")
     assert player.color == "RED"
     assert player.house == [0, 0, 0, 0]
-    assert player.starting_point == Player_starting.RED.value
+    assert player.starting_point == PlayerStarting.RED.value
     assert player.free_pawns == 4
     assert player.pawns_position == [-1, -1, -1, -1]
 
