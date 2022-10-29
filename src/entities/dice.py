@@ -7,10 +7,11 @@ from random import Random
 class Dice:
     """Class representing dice"""
 
-    def __init__(self, seed_num: int):
+    def __init__(self, seed_num: int = 123):
         """
-        :param seed: seed for random number generator
+        :param seed_num: seed for random number generator
         """
+        self.seed = seed_num
         self.random = Random(seed_num)
 
     def throw(self) -> int:
@@ -23,4 +24,4 @@ class Dice:
         """
         :return: Return class representation
         """
-        return f"Dice seed is {self.random.seed}"
+        return f"Dice seed is {self.seed}"

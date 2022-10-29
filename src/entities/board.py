@@ -1,11 +1,17 @@
 """
 Module for Board class
 """
-from entities.field import Field
-from entities.pawn import Pawn
-from entities.player import Player
+from src.entities.field import Field
+from src.entities.pawn import Pawn
+from src.entities.player import Player
 
 CELL_NUM = 40
+
+
+class NoAvailablePlayerMoveException(Exception):
+    """
+    Exception class for end of the game
+    """
 
 
 def try_move_pawn_in_house(active_player: Player, dice_result: int) -> bool:
@@ -35,9 +41,10 @@ class Board:
         :param round_num: Number of the round
         """
         if (active_player := self.player_round(round_num)) is None:
-            return
+            raise NoAvailablePlayerMoveException("Game finished")
         self.move_pawn(active_player, dice_result)
 
+    # TODO: Refactor this to new class
     def move_pawn(self, active_player: Player, to_move: int, occur: int = 1) -> None:
         """
         Moves pawn in the Field
@@ -46,11 +53,14 @@ class Board:
         :param to_move: number of points from dice
         """
         position = active_player.get_selected_pawn(occur)
+        if position == -2:
+            return -2
+
         if position == -1:
             if to_move in [1, 6]:
                 if active_player.has_pawns_in_hand():
                     self.add_pawn_to_board(active_player)
-            return
+            return -1
 
         if not try_move_pawn_in_house(active_player, to_move):
             pawn = self.fields[position].take_pawn(active_player.color)
@@ -61,9 +71,11 @@ class Board:
                 next_occur = occur + 1
                 if in_house_position < 4 and active_player.house[in_house_position] == 0:
                     active_player.move_to_house(in_house_position, position)
-                elif active_player.get_selected_pawn(next_occur):
+                elif active_player.check_selected_pawn(next_occur):
                     self.fields[position].move_pawn(pawn)
-                    self.move_pawn(active_player, to_move, next_occur)
+                    if self.move_pawn(active_player, to_move, next_occur) == -2:
+                        active_player.pawns_position.append(position)
+
                 else:
                     self.fields[position].move_pawn(pawn)
                     active_player.pawns_position.append(position)

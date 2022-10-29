@@ -1,7 +1,7 @@
 """
 Module for Field class
 """
-from entities.pawn import Pawn
+from src.entities.pawn import Pawn
 
 
 class NoPawnFoundException(Exception):
@@ -33,7 +33,8 @@ class Field:
         :return: list of Pawn that are in other color then added
         """
         other_pawns = []
-        for pawn in self.pawns:
+        pawns_on_field = self.pawns.copy()
+        for pawn in pawns_on_field:
             if pawn.color != new_pawn.color:
                 self.pawns.remove(pawn)
                 other_pawns.append(pawn)

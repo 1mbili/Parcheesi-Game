@@ -1,16 +1,17 @@
 """
 Module for Player class
 """
+from src.entities.Enums import Player_starting
 
 
 class Player:
     """Class for player in Parchessi"""
 
-    def __init__(self, color, starting_point):
+    def __init__(self, color):
         self.free_pawns = 4
         self.house = [0 for _ in range(4)]
         self.color = color
-        self.starting_point = starting_point
+        self.starting_point = getattr(Player_starting, color).value
         self.pawns_position = [-1 for i in range(4)]
 
     def return_pawn(self, position: int) -> None:
@@ -49,9 +50,21 @@ class Player:
         indexes = self.pawns_position.copy()
         for _ in range(select):
             if (res := self.get_further_pawn()) == -2:
-                return 0
+                return -2
             self.pawns_position.remove(res)
         self.pawns_position = indexes
+        return res
+
+    def check_selected_pawn(self, select: int) -> int:
+        """
+        Return n-th selected further pawn
+        :param select: numer of pawn to take
+        :return:index of selected pawn
+        """
+        indexes = self.pawns_position.copy()
+        for _ in range(select):
+            if (res := self.get_further_pawn()) == -2:
+                return 0
         return res
 
     def get_further_pawn(self) -> int:
@@ -60,7 +73,7 @@ class Player:
         for position in self.pawns_position:
             if self.starting_point > position > max_index:
                 max_index = position
-            elif (max_index >= self.starting_point or max_index == -2) and position > max_index:
+            elif (position >= self.starting_point or max_index == -2) and position > max_index:
                 max_index = max(position, max_index)
         return max_index
 
@@ -86,5 +99,12 @@ class Player:
         self.house[in_house_position] = 1
         self.pawns_position.remove(position)
 
+    def has_free_pawns(self) -> bool:
+        """
+        Check if player have pawns avalible to move
+        :return: Bool if any avalible pawn exists
+        """
+        return len(self.pawns_position) > 0
+
     def __repr__(self):
-        return f"Player {self.color}, positions: {self.pawns_position}, house: {self.house}\n"
+        return f"Player {self.color}, positions: {self.pawns_position}, house: {self.house}, free: {self.free_pawns}\n"
