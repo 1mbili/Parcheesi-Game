@@ -23,8 +23,8 @@ class Player:
         self.pawns_position.remove(position)
         self.pawns_position.append(-1)
 
-    def has_pawns_in_hand(self):
-        """Remove pawn from hand"""
+    def pick_pawn_from_hand(self):
+        """Place pawn on board"""
         if self.free_pawns == 0:
             return 0
         self.free_pawns -= 1
@@ -70,12 +70,16 @@ class Player:
 
     def get_further_pawn(self) -> int:
         """Return index of most further pawn"""
-        max_index = -2
-        for position in self.pawns_position:
-            if self.starting_point > position > max_index:
+        if not self.pawns_position:
+            return -2
+        max_index = self.pawns_position[0]
+        for position in self.pawns_position[1:]:
+            if max_index == -1 and position > -1:
                 max_index = position
-            elif (position >= self.starting_point or max_index == -2) and position > max_index:
-                max_index = max(position, max_index)
+            elif self.starting_point > position > max_index:
+                max_index = position
+            elif position >= self.starting_point and max_index >= self.starting_point and position > max_index:
+                max_index = position
         return max_index
 
     def move_in_house(self, dice_result: int) -> bool:

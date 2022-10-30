@@ -49,7 +49,8 @@ def start_game(rounds_limit: int) -> int:
     :return: Code if game finished successfully
     """
     game = Game(seed=3222)
-    for _ in range(rounds_limit):
+    for i in range(rounds_limit):
+        print(i)
         try:
             game.move()
             print(game.board)

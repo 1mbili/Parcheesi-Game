@@ -59,7 +59,7 @@ class Board:
             return -2
 
         if position == -1:
-            if to_move in [1, 6] and  active_player.has_pawns_in_hand():
+            if to_move in [1, 6] and active_player.pick_pawn_from_hand():
                 self.add_pawn_to_board(active_player)
             return -1
 
