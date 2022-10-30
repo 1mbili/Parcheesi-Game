@@ -41,7 +41,7 @@ class Player:
         self.pawns_position.remove(src)
         self.pawns_position.append(dest)
 
-    def get_selected_pawn(self, select: int) -> int:
+    def get_selected_furthest_pawn(self, select: int) -> int:
         """
         Return n-th selected further pawn
         :param select: numer of pawn to take
@@ -54,18 +54,6 @@ class Player:
                 return -2
             self.pawns_position.remove(res)
         self.pawns_position = indexes
-        return res
-
-    def check_selected_pawn(self, select: int) -> int:
-        """
-        Return n-th selected further pawn
-        :param select: numer of pawn to take
-        :return:index of selected pawn
-        """
-        res = 0
-        for _ in range(select):
-            if (res := self.get_further_pawn()) == -2:
-                return 0
         return res
 
     def get_further_pawn(self) -> int:
@@ -82,7 +70,7 @@ class Player:
                 max_index = position
         return max_index
 
-    def move_in_house(self, dice_result: int) -> bool:
+    def try_move_in_house(self, dice_result: int) -> bool:
         """
         Checks if pawn can be moved inside house
         :param dice_result: number of fields on dice
@@ -112,4 +100,5 @@ class Player:
         return len(self.pawns_position) > 0
 
     def __repr__(self):
-        return f"Player {self.color}, positions: {self.pawns_position}, house: {self.house}, free: {self.free_pawns}\n"
+        return f"Player {self.color}, positions: {self.pawns_position}, " \
+               f"house: {self.house}, free: {self.free_pawns}\n"

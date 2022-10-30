@@ -21,7 +21,6 @@ class Field:
         Remove pawn from Field
         :return: Pawn from field
         """
-        print(self.pawns)
         if self.pawns and self.pawns[-1].color == color:
             return self.pawns.pop()
         raise NoPawnFoundException(f"No {color} pawns on the field")
@@ -44,3 +43,8 @@ class Field:
     def __repr__(self) -> str:
         """Field representation"""
         return f"{self.pawns}"
+
+    def __iter__(self) -> Pawn:
+        """Iterator through pawns on Field"""
+        for pawn in self.pawns:
+            yield pawn

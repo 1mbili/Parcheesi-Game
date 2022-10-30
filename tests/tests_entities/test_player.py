@@ -90,11 +90,11 @@ def test_further_pawn_in_starting_point():
 
 
 def test_move_in_house(player_blue):
-    assert player_blue.move_in_house(2) is True
+    assert player_blue.try_move_in_house(2) is True
 
 
 def test_move_in_house_no_place(player_blue):
-    assert player_blue.move_in_house(4) is False
+    assert player_blue.try_move_in_house(4) is False
 
 
 def test_return_pawn(player_blue):
@@ -120,20 +120,20 @@ def test_no_pawn_to_pick_from_hand(player_finished_game):
 
 
 def test_get_selected_pawn(player_red):
-    pawn = player_red.get_selected_pawn(1)
+    pawn = player_red.get_selected_furthest_pawn(1)
     assert pawn == 39
 
 
 def test_get_selected_pawn_second_furthest(player_red):
-    pawn = player_red.get_selected_pawn(2)
+    pawn = player_red.get_selected_furthest_pawn(2)
     assert pawn == 1
 
 
 def test_get_selected_pawn_third_furthest(player_red):
-    pawn = player_red.get_selected_pawn(3)
+    pawn = player_red.get_selected_furthest_pawn(3)
     assert pawn == 0
 
 
 def test_get_selected_pawn_no_more_free_pawns(player_red):
-    pawn = player_red.get_selected_pawn(4)
+    pawn = player_red.get_selected_furthest_pawn(4)
     assert pawn == -2

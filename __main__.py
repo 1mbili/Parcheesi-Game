@@ -1,5 +1,5 @@
 import sys
-from src.entities.game import start_game
+from src.entities.game import Game
 
 
 def main():
@@ -7,7 +7,7 @@ def main():
     Starts the game
     :return:
     """
-    return start_game(rounds_limit=555)
+    return Game.start_game(rounds_limit=555)
 
 
 if __name__ == "__main__":

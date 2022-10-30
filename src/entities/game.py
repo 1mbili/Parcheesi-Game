@@ -41,21 +41,21 @@ class Game:
             raise EndGameException("GAME ENDED") from err
         self.round += 1
 
+    @staticmethod
+    def start_game(rounds_limit: int) -> int:
+        """
+        Starts game
+        :param rounds_limit: Limit how many round game can do
+        :return: Code if game finished successfully
+        """
+        game = Game(seed=3222)
+        for i in range(rounds_limit):
+            print(i)
+            try:
+                game.move()
+                print(game.board)
 
-def start_game(rounds_limit: int) -> int:
-    """
-    Starts game
-    :param rounds_limit: Limit how many round game can do
-    :return: Code if game finished successfully
-    """
-    game = Game(seed=3222)
-    for i in range(rounds_limit):
-        print(i)
-        try:
-            game.move()
-            print(game.board)
-
-        except EndGameException:
-            return 0
-    print(game.board)
-    return -1
+            except EndGameException:
+                return 0
+        print(game.board)
+        return -1
