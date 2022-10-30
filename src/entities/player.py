@@ -78,7 +78,7 @@ class Player:
                 max_index = position
             elif self.starting_point > position > max_index:
                 max_index = position
-            elif position >= self.starting_point and max_index >= self.starting_point and position > max_index:
+            elif position >= self.starting_point and self.starting_point <= max_index < position:
                 max_index = position
         return max_index
 

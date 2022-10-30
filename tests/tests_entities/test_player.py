@@ -117,3 +117,23 @@ def test_pick_pawn_from_hand(player_blue):
 def test_no_pawn_to_pick_from_hand(player_finished_game):
     pick_return_code = player_finished_game.pick_pawn_from_hand()
     assert pick_return_code == 0
+
+
+def test_get_selected_pawn(player_red):
+    pawn = player_red.get_selected_pawn(1)
+    assert pawn == 39
+
+
+def test_get_selected_pawn_second_furthest(player_red):
+    pawn = player_red.get_selected_pawn(2)
+    assert pawn == 1
+
+
+def test_get_selected_pawn_third_furthest(player_red):
+    pawn = player_red.get_selected_pawn(3)
+    assert pawn == 0
+
+
+def test_get_selected_pawn_no_more_free_pawns(player_red):
+    pawn = player_red.get_selected_pawn(4)
+    assert pawn == -2

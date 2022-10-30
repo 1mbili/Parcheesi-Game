@@ -85,6 +85,7 @@ class Board:
             other_pawns = self.fields[new_position].move_pawn(pawn)
             active_player.move_pawn_loc(position, new_position)
             self.fix_pawns_in_hand(other_pawns, new_position)
+        return None
 
     def fix_pawns_in_hand(self, pawns: list, position: int) -> None:
         """
