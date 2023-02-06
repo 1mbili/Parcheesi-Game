@@ -50,7 +50,8 @@ class Game:
         """
         game = Game(seed=3222)
         for i in range(rounds_limit):
-            print(i)
+            if i > 50:
+                print(i)
             try:
                 game.move()
                 print(game.board)

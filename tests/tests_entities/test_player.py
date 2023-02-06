@@ -1,5 +1,5 @@
 import pytest
-from src.entities.player import Player
+from src.entities.player import Player, OutOfPawnsException
 from src.entities.enums import PlayerStarting
 
 
@@ -63,29 +63,29 @@ def test_simple_move_to_house(player_blue):
 
 
 def test_get_further_pawn(player_blue):
-    further = player_blue.get_further_pawn()
+    further = player_blue.get_further_pawn_index()
     assert further == 39
 
 
 def test_get_further_not_max_index_is_further(player_green):
-    further = player_green.get_further_pawn()
+    further = player_green.get_further_pawn_index()
     assert further == 15
 
 
 def test_get_further_pawn_before_house(player_red):
-    further = player_red.get_further_pawn()
+    further = player_red.get_further_pawn_index()
     assert further == 39
 
 
 def test_finished_game(player_finished_game):
-    further = player_finished_game.get_further_pawn()
-    assert further == -2
+    with pytest.raises(OutOfPawnsException):
+        further = player_finished_game.get_further_pawn_index()
 
 
 def test_further_pawn_in_starting_point():
     player = Player("GREEN")
     player.pick_pawn_from_hand()
-    further = player.get_further_pawn()
+    further = player.get_further_pawn_index()
     assert further == player.starting_point
 
 
@@ -135,5 +135,5 @@ def test_get_selected_pawn_third_furthest(player_red):
 
 
 def test_get_selected_pawn_no_more_free_pawns(player_red):
-    pawn = player_red.get_selected_furthest_pawn(4)
-    assert pawn == -2
+    with pytest.raises(OutOfPawnsException):
+        pawn = player_red.get_selected_furthest_pawn(4)

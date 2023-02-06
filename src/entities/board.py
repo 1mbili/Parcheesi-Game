@@ -5,7 +5,8 @@ from typing import Any
 
 from src.entities.field import Field
 from src.entities.pawn import Pawn
-from src.entities.player import Player
+from src.entities.player import Player, OutOfPawnsException
+
 CELL_NUM = 40
 
 
@@ -40,46 +41,59 @@ class Board:
 
     def update(self, dice_result: int, round_num: int) -> None:
         """
-        Make one player move
+        Cheks which player round it is and tryes to make a move
         :param dice_result: Number thrown by the dice
         :param round_num: Number of the round
         """
         if (active_player := self.player_round(round_num)) is None:
             raise NoAvailablePlayerMoveException("Game finished")
-        self.move_pawn(active_player, dice_result)
+        self.make_move(active_player, dice_result)
+
+    def make_move(self, active_player, dice_result):
+        """
+        Try to move player pawn, in order from the furthest
+        :param active_player: Player which round it is
+        :param dice_result: Number thrown by the dice
+        :param round_num: Number of the round
+        """
+        pawns_num = len(active_player.pawns_position)
+        for i in range(pawns_num):
+            ret_id = self.move_pawn(active_player, dice_result, 1)
+            if ret_id is True:
+                break
 
     # TODO: Refactor this to new class
-    def move_pawn(self, active_player: Player, to_move: int, following_pawn: int = 1) -> int:
+    # TODO: Maybe separate field list for every player
+    # cd. Maybe Simple map to match board field_index and player_index?
+    def move_pawn(self, active_player: Player, to_move: int, following_pawn: int = 1) -> True:
         """
         Moves pawn in the Field
         :param following_pawn: number of further pawn to take
         :param active_player: player which is the move
         :param to_move: number of points from dice
+        :returns: True if move was made or there is no possible moves
         """
-        position = active_player.get_selected_furthest_pawn(following_pawn)
-        if position == -2:
-            return -2
+        try:
+            position = active_player.get_selected_furthest_pawn(following_pawn)
+        except OutOfPawnsException:
+            return True
+
         if position == -1:
             if to_move in [1, 6] and active_player.pick_pawn_from_hand():
                 self.add_pawn_to_board(active_player)
-            return -1
+            return True
 
-        if not active_player.try_move_in_house(to_move):
-            pawn = self.fields[position].take_pawn(active_player.color)
-            new_position = (position + to_move) % 40
-            if (position < active_player.starting_point <= new_position
-                    or position > new_position >= active_player.starting_point):
-                in_house_position = new_position - active_player.starting_point
-                next_pawn = following_pawn + 1
-                if in_house_position < 4 and active_player.house[in_house_position] == 0:
-                    active_player.move_to_house(in_house_position, position)
-                elif active_player.get_selected_furthest_pawn(next_pawn):
-                    self.fields[position].move_pawn(pawn)
-                    if self.move_pawn(active_player, to_move, next_pawn) == -2:
-                        active_player.pawns_position.append(position)
-            else:
-                self.make_move_on_board(position, new_position, pawn, active_player)
-        return None
+        if active_player.try_move_in_house(to_move):
+            return True
+
+        pawn = self.fields[position].take_pawn(active_player.color)
+        new_position = (position + to_move) % 40
+
+        if active_player.try_move_pawn_to_house(position, new_position):
+            return True
+
+        self.make_move_on_board(position, new_position, pawn, active_player)
+        return True
 
     def fix_pawns_in_hand(self, pawns: list, position: int) -> None:
         """
