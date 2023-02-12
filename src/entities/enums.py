@@ -9,6 +9,6 @@ class PlayerStarting(Enum):
     Map player colors with starting points
     """
     RED = 0
-    BLUE = 10
-    YELLOW = 20
-    GREEN = 30
+    BLUE = 15
+    YELLOW = 30
+    GREEN = 45

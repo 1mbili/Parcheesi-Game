@@ -7,7 +7,7 @@ from src.entities.field import Field
 from src.entities.pawn import Pawn
 from src.entities.player import Player, OutOfPawnsException
 
-CELL_NUM = 40
+CELL_NUM = 60
 
 
 class NoAvailablePlayerMoveException(Exception):
@@ -87,7 +87,7 @@ class Board:
             return True
 
         pawn = self.fields[position].take_pawn(active_player.color)
-        new_position = (position + to_move) % 40
+        new_position = (position + to_move) % CELL_NUM
 
         if active_player.try_move_pawn_to_house(position, new_position):
             return True
@@ -123,8 +123,9 @@ class Board:
         :param round_num: player round number
         :return: player
         """
-        for i in range(len(self.players)):
-            player_round = (round_num + i) % 4
+        player_num = len(self.players)
+        for i in range(player_num):
+            player_round = (round_num + i) % player_num
             if self.players[player_round].pawns_position:
                 return self.players[player_round]
         return None
