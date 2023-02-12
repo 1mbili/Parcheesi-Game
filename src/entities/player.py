@@ -112,11 +112,15 @@ class Player:
                f"house: {self.house}, free: {self.free_pawns}\n"
 
     def try_move_pawn_to_house(self, position, new_position):
+        """
+        Tryes to move pawn in house
+        :param position: actual pawn in house position
+        :param new_position: candidate pawn in house position
+        :return: If move waas sucessfull
+        """
         if position < self.starting_point <= new_position or position > new_position >= self.starting_point:
             in_house_position = new_position - self.starting_point
             if in_house_position < 4 and self.house[in_house_position] == 0:
                 self.move_to_house(in_house_position, position)
                 return True
         return False
-
-

@@ -57,7 +57,7 @@ class Board:
         :param round_num: Number of the round
         """
         pawns_num = len(active_player.pawns_position)
-        for i in range(pawns_num):
+        for _ in range(pawns_num):
             ret_id = self.move_pawn(active_player, dice_result, 1)
             if ret_id is True:
                 break

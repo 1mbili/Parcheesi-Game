@@ -1,25 +1,32 @@
-from src.entities.game import Game
-from src.entities.board import Board
-from src.visualization.colorsEnum import Color, Positions
+"""
+Module for Game class
+"""
 import numpy as np
 import matplotlib.pyplot as plt
+
+from src.entities.game import Game
+from src.entities.board import Board
+from src.visualization.colors_enum import Color, Positions
 
 WIDTH = 20
 HEIGHT = 20
 
 
 class MatplotlibVisualize:
+    """
+    Matplotlib visualizer for parchessi game
+    """
 
     def __init__(self):
-        self.board = None
+        self.game_board = None
 
-    def visualize_board(self, board):
+    def visualize_board(self, board: Board):
         """
         Visualize actual state of the board
         :board: Board to visualize
         :returns matplotlib plot
         """
-        self.board = board
+        self.game_board = board
         grid = self.create_default_grid()
         self.visualize_grid(grid)
 
@@ -29,7 +36,7 @@ class MatplotlibVisualize:
         :param grid: grid to plot
         """
         plt.figure()
-        im = plt.imshow(grid, interpolation="none")
+        plt.imshow(grid, interpolation="none")
         ax = plt.gca()
         ax.set_xticks(np.arange(0, WIDTH, 1))
         ax.set_yticks(np.arange(0, HEIGHT, 1))
@@ -88,7 +95,12 @@ class MatplotlibVisualize:
         return grid
 
     def map_game_board(self, grid):
-        current_board = self.board
+        """
+        Add pawns to the board
+        :param grid: game board grid
+        :return: filled grid
+        """
+        current_board = self.game_board
         for field, coords in zip(current_board.fields, Positions):
             if field.pawns:
                 pawn_color = "PAWN_" + field.pawns[0].color
@@ -100,5 +112,5 @@ viz = MatplotlibVisualize()
 game = Game(seed=3222)
 for i in range(32):
     game.move()
-board = game.board
-viz.visualize_board(board)
+test_board = game.board
+viz.visualize_board(test_board)
